@@ -1,49 +1,125 @@
 {% extends "base.html" %}
-{% load static %}
 
 {% block title %}Dashboard{% endblock %}
 
-{% block css %}
-    <link href="{% static 'css/dashboard.css'%}" rel='stylesheet'>
-{% endblock %}
-
 {% block content %}
 
-    <div class="dashboard-wrapper">
+    <div class="row g-4">
 
-        <h1 class="dashboard-title">Dashboard</h1>
-        <div class="row justify-content-center stats-row">
-            <div class="col-md-3">
-                <div class="card stat-card balance">
-                    <div class="card-body text-center">
-
-                        <h5>Total Balance</h5>
-                        <h2>$ {{ balance }}</h2>
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-
-                <div class="card stat-card income">
-                    <div class="card-body text-center">
-
-                        <h5>Income</h5>
-                        <h2>$ {{ income }}</h2>
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card stat-card expenses">
-                    <div class="card-body text-center">
-
-                        <h5>Expenses</h5>
-                        <h2>$ {{ expenses }}</h2>
-
-                    </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success shadow">
+                <div class="card-body">
+                    <h5>Balance</h5>
+                    <h2>{{ balance }} RON</h2>
                 </div>
             </div>
         </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-primary shadow">
+                <div class="card-body">
+                    <h5>Income</h5>
+                    <h2>{{ income }} RON</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-danger shadow">
+                <div class="card-body">
+                    <h5>Expenses</h5>
+                    <h2>{{ expenses }} RON</h2>
+                </div>
+            </div>
+        </div>
+
     </div>
+
+    <hr class="my-4">
+
+    <div class="card shadow">
+        <div class="ms-auto">
+            <form method="get" class="mb-3 d-flex">
+                <input type="text" name="q" class="form-control me-2"
+                       placeholder="Search transactions..."
+                       value="{{ search_query }}">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </form>
+        </div>
+        <div class="card-header">
+            Transactions Overview
+        </div>
+
+        <div class="card-body">
+            <canvas id="financeChart"></canvas>
+        </div>
+    </div>
+
+    <hr class="my-4">
+
+    <div class="card shadow">
+        <div class="card-header">
+            Recent Transactions
+        </div>
+
+        <div class="card-body">
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                    <th>Date</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                {% for t in transactions|slice:":5" %}
+                    <tr>
+                        <td>{{ t.title }}</td>
+                        <td>{{ t.amount }} RON</td>
+                        <td>{{ t.type }}</td>
+                        <td>{{ t.date }}</td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block js %}
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+
+        const ctx = document.getElementById('financeChart');
+
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Income', 'Expenses'],
+                datasets: [{
+                    data: [{{ income }}, {{ expenses }}],
+                    backgroundColor: [
+                        '#198754',
+                        '#dc3545'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+    </script>
+
 {% endblock %}

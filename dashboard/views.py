@@ -8,19 +8,22 @@ from transactions.models import Transaction
 
 @login_required
 def dashboard(request):
-    transactions = Transaction.objects.all()
+    search_query = request.GET.get('q', '')
+    transactions = Transaction.objects.filter(user=request.user)
+
+    if search_query:
+        transactions = transactions.filter(title__icontains=search_query)
 
     income = sum(t.amount for t in transactions if t.type == 'income')
-
     expenses = sum(t.amount for t in transactions if t.type == 'expense')
-
     balance = income - expenses
 
     context = {
         'transactions': transactions,
         'income': income,
         'expenses': expenses,
-        'balance': balance
+        'balance': balance,
+        'search_query': search_query,
     }
 
     return render(request, "homepage/dashboard.html", context)
