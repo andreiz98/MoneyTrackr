@@ -37,6 +37,10 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
+                            <button id="darkModeToggle" class="btn ms-auto">
+                                <span id="darkModeIcon">🌙</span>
+                            </button>
+                        <li class="nav-item">
                             <span class="nav-link
                                 {% if balance == 0 %} text-danger {% elif balance < 0 %} text-warning {% else %} text-success {% endif %}">
                                 Balance: {{ balance }} RON

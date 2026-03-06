@@ -1,0 +1,37 @@
+body.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+body.dark-mode .card,
+body.dark-mode .card-header,
+body.dark-mode .card-body,
+body.dark-mode .table {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border-color: #333333;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border-color: #333333;
+}
+
+body.dark-mode .btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+body.dark-mode .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+body.dark-mode .navbar,
+body.dark-mode .navbar-nav .nav-link {
+    background-color: #1e1e1e;
+    color: #ffffff !important;
+}
