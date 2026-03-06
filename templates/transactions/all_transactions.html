@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+
+        <div class="card shadow">
+
+            <div class="card-header text-center fw-bold">
+                Transactions
+            </div>
+
+            <div class="card-body">
+
+                <table class="table">
+
+                    <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Amount</th>
+                        <th>Type</th>
+                        <th>Date</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for transaction in transactions %}
+
+                        <tr>
+                            <td>{{ transaction.title }}</td>
+                            <td>${{ transaction.amount }}</td>
+                            <td>{{ transaction.type }}</td>
+                            <td>{{ transaction.date }}</td>
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+{% endblock %}

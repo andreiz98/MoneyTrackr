@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block css %}
+    <link href="{% static 'css/dashboard.css'%}" rel='stylesheet'>
+{% endblock %}
+
+{% block content %}
+
+    <div class="dashboard-wrapper">
+
+        <h1 class="dashboard-title">Dashboard</h1>
+        <div class="row justify-content-center stats-row">
+            <div class="col-md-3">
+                <div class="card stat-card balance">
+                    <div class="card-body text-center">
+
+                        <h5>Total Balance</h5>
+                        <h2>$ {{ balance }}</h2>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+
+                <div class="card stat-card income">
+                    <div class="card-body text-center">
+
+                        <h5>Income</h5>
+                        <h2>$ {{ income }}</h2>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card expenses">
+                    <div class="card-body text-center">
+
+                        <h5>Expenses</h5>
+                        <h2>$ {{ expenses }}</h2>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

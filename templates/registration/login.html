@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-header text-center">
+                    <h4>Login</h4>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="card-body">
+                        {{ form.as_p }}
+                    </div>
+                    <div class="card-footer text-center">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                        <a href="#" class="btn btn-outline-danger">Reset your password</a>
+                    </div>
+
+                    <p class="text-center mt-3">
+                        Nu ai cont?
+                        <a href="{% url 'register_user' %}">Register</a>
+                    </p>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

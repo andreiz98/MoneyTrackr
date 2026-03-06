@@ -1,0 +1,40 @@
+.dashboard-wrapper{
+    min-height:80vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.dashboard-title{
+    text-align:center;
+    margin-bottom:50px;
+    font-weight:600;
+}
+
+.stats-row{
+    gap:20px;
+}
+
+.stat-card{
+    border:none;
+    border-radius:12px;
+    transition:0.3s;
+    box-shadow:0 8px 25px rgba(0,0,0,0.08);
+}
+
+.stat-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 12px 35px rgba(0,0,0,0.15);
+}
+
+.balance h2{
+    color:#16a34a;
+}
+
+.income h2{
+    color:#2563eb;
+}
+
+.expenses h2{
+    color:#ef4444;
+}

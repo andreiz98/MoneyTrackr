@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Add Transaction{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="card shadow">
+            <div class="card-header">Add Transaction</div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <input class="form-control mb-2" name="title" placeholder="Title" required>
+                    <input class="form-control mb-2" name="amount" placeholder="Amount" required>
+                    <select class="form-control mb-2" name="type" required>
+                        <option value="" disabled selected hidden>Type</option>
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                    </select>
+                    <button class="btn btn-success w-100" type="submit">Add</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

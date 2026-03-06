@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Homepage{% endblock %}
+
+{% block css %}
+     <link href="{% static 'css/my_style.css'%}" rel='stylesheet'>
+{% endblock %}
+
+{% block content %}
+    <section class="hero">
+
+    <h1>Control Your Money</h1>
+
+    <p>
+    Track your income and expenses easily.
+    Manage your personal finances and see where your money goes.
+    </p>
+
+    <div class="buttons">
+        <a href="{% url 'login' %}" class="btn login">Login</a>
+        <a href="{% url 'register_user' %}" class="btn register">Create Account</a>
+    </div>
+
+    </section>
+{% endblock %}
