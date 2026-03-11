@@ -21,15 +21,8 @@
                         <li class="nav-item">
                             <a class="nav-link active fw-bold" aria-current="page" href="{% url 'dashboard' %}">Dashboard</a>
 
-                        <li class="nav-item dropdown">
-                        <a class="nav-link fw-bold dropdown-toggle" role="button" data-bs-toggle="dropdown"
-                           aria-expanded="false">
-                            Transactions
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'add_transaction' %}">Add Income/Expenses</a></li>
-                            <li><a class="dropdown-item" href="{% url 'all_transactions' %}">All Transactions</a></li>
-                        </ul>
+                        <li class="nav-item">
+                            <a class="nav-link active fw-bold" href="{% url 'all_transactions' %}">Transactions</a>
                     {% endif %}
             </ul>
 

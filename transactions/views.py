@@ -1,77 +1,72 @@
-import datetime
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView, CreateView
 
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-
+from transactions.forms import ExpenseForm, IncomeForm
 from transactions.models import Transaction
 
 
 # Create your views here.
 
-@login_required
-def add_transactions(request):
-    transact = Transaction.objects.filter(user=request.user)
+class AddIncome(LoginRequiredMixin, CreateView):
+    template_name = 'transactions/add_income.html'
+    model = Transaction
+    form_class = IncomeForm
+    success_url = '/addIncome/'
 
-    income = sum(t.amount for t in transact if t.type == 'income')
-    expenses = sum(t.amount for t in transact if t.type == 'expense')
-    balance = income - expenses
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.type = f'income'
+        return super().form_valid(form)
 
-    if request.method == "POST":
-        title = request.POST.get('title')
-        amount = request.POST.get('amount')
-        type_ = request.POST.get('type')
+class AddExpenses(LoginRequiredMixin, CreateView):
+    template_name = 'transactions/add_expenses.html'
+    form_class = ExpenseForm
+    model = Transaction
+    success_url = '/addExpenses/'
 
-        if title and amount and type_:
-            Transaction.objects.create(
-                user=request.user,
-                title=title,
-                amount=amount,
-                type=type_
-            )
-            return redirect('add_transaction')
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.type = f'expense'
+        return super().form_valid(form)
 
-    context = {
-        'transactions': transact,
-        'income': income,
-        'expenses': expenses,
-        'balance': balance,
-    }
+class TransactionDetailView(LoginRequiredMixin, ListView):
+    template_name = 'transactions/all_transactions.html'
+    model = Transaction
+    context_object_name = 'all_transaction'
 
-    return render(request, "transactions/add_transactions.html", context)
+    def get_context_data(self, **kwargs):
 
-@login_required()
-def all_transactions(request):
-    search_query = request.GET.get('q', '')
-    start_date = request.GET.get('start_date', '')
-    end_date = request.GET.get('end_date', '')
-    type_filter = request.GET.get('type', '')
-    min_amount = request.GET.get('min_amount', '')
-    max_amount = request.GET.get('max_amount', '')
+        search_query = self.request.GET.get('q', '')
+        start_date = self.request.GET.get('start_date', '')
+        end_date = self.request.GET.get('end_date', '')
+        type_filter = self.request.GET.get('type', '')
+        min_amount = self.request.GET.get('min_amount', '')
+        max_amount = self.request.GET.get('max_amount', '')
 
-    transactions = Transaction.objects.filter(user=request.user)
+        transactions = Transaction.objects.filter(user=self.request.user)
 
-    if request.GET:
-        if search_query:
-            transactions = transactions.filter(title__icontains=search_query)
-        if start_date:
-            transactions = transactions.filter(date__gte=start_date)
-        if end_date:
-            transactions = transactions.filter(date__lte=end_date)
-        if type_filter in ['income', 'expense']:
-            transactions = transactions.filter(type=type_filter)
-        if min_amount:
-            transactions = transactions.filter(amount__gte=min_amount)
-        if max_amount:
-            transactions = transactions.filter(amount__lte=max_amount)
+        if self.request.method == "GET":
+            if search_query:
+                transactions = transactions.filter(title__icontains=search_query)
+            if start_date:
+                transactions = transactions.filter(date__gte=start_date)
+            if end_date:
+                transactions = transactions.filter(date__lte=end_date)
+            if type_filter in ['income', 'food', 'transport','rent',
+            'utilities','entertainment','shopping','health', 'education','subscriptions','other']:
+                transactions = transactions.filter(type=type_filter)
+            if min_amount:
+                transactions = transactions.filter(amount__gte=min_amount)
+            if max_amount:
+                transactions = transactions.filter(amount__lte=max_amount)
 
-    context = {
-        'transactions': transactions.order_by('-date'),
-        'search_query': search_query,
-        'start_date': start_date,
-        'end_date': end_date,
-        'min_amount': min_amount,
-        'max_amount': max_amount,
-        'type_filter': type_filter,
-    }
+        context = {
+            'all_transaction': transactions.order_by('-date'),
+            'start_date': start_date,
+            'end_date': end_date,
+            'min_amount': min_amount,
+            'max_amount': max_amount,
+            'type_filter': type_filter,
+        }
 
-    return render(request, "transactions/all_transactions.html", context)
+        return context

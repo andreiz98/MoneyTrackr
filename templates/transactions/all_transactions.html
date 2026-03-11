@@ -45,11 +45,16 @@
                 </div>
             </div>
 
-            <div class="card-header text-center fw-bold">
+            <div class="card-header fw-bold">
+                <a class="btn btn-outline-primary me-2" href="{% url 'add_income' %}">Add Income</a>
+                <a class="btn btn-outline-primary me-2" href="{% url 'add_expenses' %}">Add Expenses</a>
+            </div>
+
+            <div class="card-header fw-bold">
                 Transactions
             </div>
 
-            <div class="card-body">
+            <div class="card-body text-center">
 
                 <table class="table">
 
@@ -64,7 +69,7 @@
 
                     <tbody>
 
-                    {% for transaction in transactions %}
+                    {% for transaction in all_transaction %}
 
                         <tr>
                             <td>{{ transaction.title }}</td>

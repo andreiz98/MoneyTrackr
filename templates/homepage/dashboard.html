@@ -38,15 +38,7 @@
     <hr class="my-4">
 
     <div class="card shadow">
-        <div class="ms-auto">
-            <form method="get" class="mb-3 d-flex">
-                <input type="text" name="q" class="form-control me-2"
-                       placeholder="Search transactions..."
-                       value="{{ search_query }}">
-                <button class="btn btn-primary" type="submit">Search</button>
-            </form>
-        </div>
-        <div class="card-header">
+        <div class="card-header fw-bold">
             Transactions Overview
         </div>
 
@@ -58,7 +50,7 @@
     <hr class="my-4">
 
     <div class="card shadow">
-        <div class="card-header">
+        <div class="card-header fw-bold">
             Recent Transactions
         </div>
 
@@ -99,27 +91,25 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const ctx = document.getElementById('financeChart').getContext('2d');
 
-        const ctx = document.getElementById('financeChart');
-
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Income', 'Expenses'],
-                datasets: [{
-                    data: [{{ income }}, {{ expenses }}],
-                    backgroundColor: [
-                        '#198754',
-                        '#dc3545'
-                    ]
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: {{ labels|safe }},
+                    datasets: [{
+                        data: {{ amounts|safe }},
+                        backgroundColor: {{ colors|safe }}
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {legend: {position: 'right'}}
+                }
+            });
         });
-
     </script>
 
 {% endblock %}
