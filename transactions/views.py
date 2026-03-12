@@ -1,5 +1,12 @@
+from django.utils import timezone
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+import openpyxl
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
 from django.views.generic import ListView, CreateView
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 
 from transactions.forms import ExpenseForm, IncomeForm
 from transactions.models import Transaction
@@ -48,12 +55,14 @@ class TransactionDetailView(LoginRequiredMixin, ListView):
         if self.request.method == "GET":
             if search_query:
                 transactions = transactions.filter(title__icontains=search_query)
-            if start_date:
-                transactions = transactions.filter(date__gte=start_date)
-            if end_date:
-                transactions = transactions.filter(date__lte=end_date)
-            if type_filter in ['income', 'food', 'transport','rent',
-            'utilities','entertainment','shopping','health', 'education','subscriptions','other']:
+            if start_date and end_date:
+                transactions = transactions.filter(date__date__range=[start_date, end_date])
+            else:
+                now = timezone.now()
+                transactions = transactions.filter(date__year=now.year, date__month=now.month)
+            if type_filter in ['income', 'food', 'transport', 'rent',
+                               'utilities', 'entertainment', 'shopping', 'health', 'education', 'subscriptions',
+                               'other']:
                 transactions = transactions.filter(type=type_filter)
             if min_amount:
                 transactions = transactions.filter(amount__gte=min_amount)
@@ -62,11 +71,84 @@ class TransactionDetailView(LoginRequiredMixin, ListView):
 
         context = {
             'all_transaction': transactions.order_by('-date'),
-            'start_date': start_date,
-            'end_date': end_date,
+            'start_date': start_date or '',
+            'end_date': end_date or '',
             'min_amount': min_amount,
             'max_amount': max_amount,
             'type_filter': type_filter,
         }
 
         return context
+
+@login_required
+def export_excel(request):
+    transactions = Transaction.objects.filter(user=request.user)
+
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+
+    response['Content-Disposition'] = 'attachment; filename=transactions.xlsx'
+
+    workbook = openpyxl.Workbook()
+    worksheet = workbook.active
+    worksheet.title = 'Transactions'
+
+    worksheet.append([
+        'Title',
+        'Amount',
+        'Category',
+        'Date'
+    ])
+
+    for t in transactions:
+        worksheet.append([
+            t.title,
+            float(t.amount),
+            t.category.name if t.category else '',
+            t.date.strftime("%Y-%m-%d")
+        ])
+
+    workbook.save(response)
+
+    return response
+
+
+@login_required
+def export_pdf(request):
+    transactions = Transaction.objects.filter(user=request.user)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="transactions.pdf"'
+
+    doc = SimpleDocTemplate(response, pagesize=letter)
+    elements = []
+
+    data = [['Title', 'Amount', 'Category', 'Type', 'Date']]
+
+    for t in transactions:
+        data.append([
+            t.title,
+            f"{t.amount} RON",
+            t.category.name if t.category else 'N/A',
+            t.type,
+            t.date.strftime("%d/%m/%Y %H:%M")
+        ])
+
+    table = Table(data, colWidths=[120, 80, 100, 80, 120])
+    style = TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.whitesmoke, colors.lightgrey])
+    ])
+    table.setStyle(style)
+
+    elements.append(table)
+    doc.build(elements)
+
+    return response

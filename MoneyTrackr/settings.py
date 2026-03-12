@@ -120,8 +120,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR / 'static')]
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/login/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'andreizha98@gmail.com'
+EMAIL_HOST_PASSWORD = 'zlvu zmcw oebf iutk'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True

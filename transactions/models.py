@@ -35,7 +35,7 @@ class Transaction(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     type = models.CharField(max_length=10, choices=TYPE_CHOICES)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

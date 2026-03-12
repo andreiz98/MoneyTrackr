@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.auth import views
+from django.contrib.auth.views import LoginView
 from django.urls import path, include
 
 from register.forms import AuthForm
@@ -24,8 +25,35 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('home.urls')),
     path('', include('register.urls')),
+    path('forgot-password/',
+         views.PasswordResetView.as_view(
+             template_name="registration/password_reset.html"
+         ),
+         name="password_reset"),
+
+    path('forgot-password/sent/',
+         views.PasswordResetDoneView.as_view(
+             template_name="registration/password_reset_sent.html"
+         ),
+         name="password_reset_done"),
+
+    path('reset/<uidb64>/<token>/',
+         views.PasswordResetConfirmView.as_view(
+             template_name="registration/password_reset_confirm.html"
+         ),
+         name="password_reset_confirm"),
+
+    path('reset/complete/',
+         views.PasswordResetCompleteView.as_view(
+             template_name="registration/password_reset_complete.html"
+         ),
+         name="password_reset_complete"),
     path('', include('dashboard.urls')),
     path('', include('transactions.urls')),
-    path("login/", views.LoginView.as_view(form_class=AuthForm), name="register"),
-    path('', include('django.contrib.auth.urls')),
+    path("login/",
+         LoginView.as_view(
+             template_name='registration/login.html',
+             authentication_form=AuthForm),
+         name="login"),
+    path("logout/", views.LogoutView.as_view(), name="logout"),
 ]
