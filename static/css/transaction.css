@@ -1,0 +1,57 @@
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table thead {
+    background: #f8f9fa;
+}
+
+.table tbody tr:hover {
+    background: #f2f6ff;
+    transition: 0.2s;
+}
+
+.amount-income {
+    color: #198754;
+    font-weight: 600;
+}
+
+.amount-expense {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.badge-income {
+    background: #198754;
+}
+
+.badge-expense {
+    background: #dc3545;
+}
+
+.action-btn {
+    border-radius: 10px;
+    padding: 6px 14px;
+}
+
+.filter-card {
+    background: #f8fafc;
+    border-radius: 12px;
+}
+
+.icon-btn {
+    font-size: 20px;
+    color: #495057;
+    transition: 0.2s;
+}
+
+.icon-btn:hover {
+    transform: scale(1.15);
+    color: #0d6efd;
+}

@@ -6,7 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.views.generic import ListView, CreateView
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 
 from transactions.forms import ExpenseForm, IncomeForm
 from transactions.models import Transaction
@@ -105,7 +106,7 @@ def export_excel(request):
         worksheet.append([
             t.title,
             float(t.amount),
-            t.category.name if t.category else '',
+            t.category.name if t.category else 'N/A',
             t.date.strftime("%Y-%m-%d")
         ])
 
@@ -123,6 +124,11 @@ def export_pdf(request):
 
     doc = SimpleDocTemplate(response, pagesize=letter)
     elements = []
+
+    styles = getSampleStyleSheet()
+
+    title = Paragraph('Transactions Report', styles['Title'])
+    space = Spacer(1, 10)
 
     data = [['Title', 'Amount', 'Category', 'Type', 'Date']]
 
@@ -148,6 +154,8 @@ def export_pdf(request):
     ])
     table.setStyle(style)
 
+    elements.append(title)
+    elements.append(space)
     elements.append(table)
     doc.build(elements)
 

@@ -1,3 +1,5 @@
+import datetime
+
 from django import forms
 
 from transactions.models import Transaction
@@ -22,6 +24,10 @@ class ExpenseForm(forms.ModelForm):
         if get_amount <= 0:
             self.add_error('amount', 'Amount must be greater than 0')
 
+        get_date = cleaned_data.get('date')
+        if get_date.month != datetime.datetime.now().month:
+            self.add_error('date', 'Date must be today or in the past')
+
         return cleaned_data
 
 class IncomeForm(forms.ModelForm):
@@ -41,5 +47,9 @@ class IncomeForm(forms.ModelForm):
         get_amount = cleaned_data.get('amount')
         if get_amount <= 0:
             self.add_error('amount', 'Amount must be greater than 0')
+
+        get_date = cleaned_data.get('date')
+        if get_date.month != datetime.datetime.now().month:
+            self.add_error('date', 'Date must be today or in the past')
 
         return cleaned_data
